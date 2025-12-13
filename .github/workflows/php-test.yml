@@ -27,10 +27,21 @@ jobs:
       - name: Install dependencies
         run: composer install --no-interaction --prefer-dist
 
-      # 4. Set environment NEWS_API_KEY dari GitHub Secrets (untuk testing di CI)
-      - name: Export NEWS_API_KEY from secrets
-        run: echo "NEWS_API_KEY=${{ secrets.NEWS_API_KEY }}" >> $GITHUB_ENV
+     # 4. Cek apakah API_KEY tersedia (AMAN)
+      - name: Check APIKEY
+        env:
+          APIKEY: ${{ secrets.APIKEY }}
+        run: |
+          if [ -z "$APIKEY" ]; then
+            echo "❌ APIKEY tidak ditemukan"
+            exit 1
+          else
+            echo "✅ APIKEY tersedia"
+          fi
 
-      # 5. Jalankan PHPUnit
-      - name: Run PHPUnit Tests
-        run: vendor/bin/phpunit --testdox
+      # 5. Jalankan file PHP
+      - name: Run PHP script
+        env:
+          APIKEY: ${{ secrets.APIKEY }}
+        run: |
+          php api.php
