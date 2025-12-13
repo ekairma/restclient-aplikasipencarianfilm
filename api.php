@@ -1,11 +1,25 @@
 <?php
+// Load .env
+$env = parse_ini_file(__DIR__ . '/.env');
 
-$apiKey = getenv('APIKEY');
+$APIKEY = $env['APIKEY'] ?? null;
 
-if (!$apiKey) {
-    die("API KEY tidak ditemukan");
+if (!$APIKEY) {
+    die("API Key tidak ditemukan di file .env");
 }
 
-// contoh penggunaan
-$url = "https://api.example.com/data?key=" . $apiKey;
+function callAPI($url)
+{
+    $curl = curl_init($url);
 
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+    $result = curl_exec($curl);
+
+    if ($result === false) {
+        die("cURL Error: " . curl_error($curl));
+    }
+
+    curl_close($curl);
+    return $result;
+}

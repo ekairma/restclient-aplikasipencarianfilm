@@ -14,6 +14,7 @@
  echo "<h2>$judul</h2>";
  ?>
 <div class="menu">
+    <a href="laman-judulfilm.php">Cari Film Berdasarkan Judul</a>
 
 </div>
 
