@@ -7,8 +7,12 @@ $apiKey = $env['APIKEY'] ?? null;
 if (!$apiKey) {
     die("API Key tidak ditemukan di file .env");
 }
-
+ laman-tahunfilm
 function callAPI($method, $url) {
+
+function callAPI($method, $url)
+{
+ main
     $curl = curl_init();
 
     curl_setopt_array($curl, [

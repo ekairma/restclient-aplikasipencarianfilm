@@ -1,4 +1,6 @@
-<?php include "api.php"; ?>
+<?php
+include "api.php";
+?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -6,99 +8,185 @@
 <title>Movie / Film Finder</title>
 
 <style>
-/* ===== RESET ===== */
+/* ================= RESET ================= */
 * {
+    margin: 0;
+    padding: 0;
     box-sizing: border-box;
 }
 
-/* ===== BACKGROUND ===== */
+/* ================= BODY & BACKGROUND ================= */
 body {
-    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #0a0a0a;
     min-height: 100vh;
-    font-family: "Segoe UI", Arial, sans-serif;
+    padding: 40px 20px;
+    overflow-x: hidden;
+    perspective: 1000px;
+    color: #ffd700;
+}
+
+/* Animated Cinema Background */
+body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+        radial-gradient(ellipse at top, rgba(255,215,0,.15), transparent 50%),
+        radial-gradient(ellipse at bottom, rgba(220,20,60,.15), transparent 50%),
+        linear-gradient(180deg, #0a0a0a, #1a0a0a, #0a0a0a);
+    animation: backgroundPulse 8s ease-in-out infinite;
+    z-index: -2;
+}
+
+/* Film Strip */
+body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
     background: repeating-linear-gradient(
         90deg,
-        #0b0b0b,
-        #0b0b0b 20px,
-        #111 20px,
-        #111 40px
+        transparent,
+        transparent 50px,
+        rgba(255,215,0,.03) 50px,
+        rgba(255,215,0,.03) 60px
     );
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: #ffd700;
+    animation: filmStrip 20s linear infinite;
+    pointer-events: none;
+    z-index: -1;
 }
 
-/* ===== CONTAINER ===== */
+@keyframes backgroundPulse {
+    0%,100% { opacity: 1 }
+    50% { opacity: .8 }
+}
+
+@keyframes filmStrip {
+    from { transform: translateX(0); }
+    to { transform: translateX(50%); }
+}
+
+/* ================= CONTAINER ================= */
 .container {
-    width: 900px;
-    padding: 40px;
+    max-width: 1100px;
+    margin: auto;
+    text-align: center;
 }
 
-/* ===== HEADER ===== */
-.header h1 {
-    font-size: 48px;
+/* ================= HEADER ================= */
+h1 {
+    font-size: 3.5em;
     letter-spacing: 3px;
-    margin: 0;
-    color: #ffd700;
+    margin-bottom: 15px;
     text-shadow:
         0 0 10px rgba(255,215,0,.8),
-        0 0 25px rgba(255,215,0,.6);
+        0 0 20px rgba(255,215,0,.6),
+        0 0 30px rgba(255,215,0,.4);
+    animation: neonFlicker 3s infinite, fadeInDown 1s ease;
 }
 
 .subtitle {
-    margin-top: 10px;
-    font-size: 22px;
-    color: #ffd54a;
-    text-shadow: 0 0 10px rgba(255,215,0,.6);
+    font-size: 1.3em;
+    margin-bottom: 35px;
+    animation: fadeInDown 1.2s ease;
 }
 
-/* ===== SEARCH BOX ===== */
-.search-box {
-    margin-top: 40px;
+@keyframes neonFlicker {
+    0%,100% {
+        text-shadow:
+            0 0 10px rgba(255,215,0,.8),
+            0 0 20px rgba(255,215,0,.6),
+            0 0 30px rgba(255,215,0,.4);
+    }
+    50% {
+        text-shadow:
+            0 0 15px rgba(255,215,0,1),
+            0 0 30px rgba(255,215,0,.8),
+            0 0 45px rgba(255,215,0,.6);
+    }
+}
+
+/* ================= SEARCH FORM ================= */
+.search-box form {
+    max-width: 600px;
+    margin: auto;
+    background: linear-gradient(135deg, rgba(26,10,10,.95), rgba(10,10,10,.95));
+    padding: 35px;
+    border-radius: 20px;
+    box-shadow:
+        0 25px 70px rgba(0,0,0,.8),
+        0 0 40px rgba(220,20,60,.3);
+    animation: fadeInUp 1s ease;
 }
 
 .search-box input {
     width: 100%;
-    padding: 20px 26px;
-    font-size: 20px;
-    border-radius: 16px;
-    border: none;
-    outline: none;
+    padding: 18px 22px;
+    border-radius: 12px;
+    border: 2px solid rgba(255,215,0,.3);
+    font-size: 1.1em;
+    background: rgba(0,0,0,.6);
     color: #ffd700;
-    background: linear-gradient(135deg, #ff4500, #b30000);
-    box-shadow:
-        0 0 25px rgba(255,0,0,.8),
-        inset 0 0 10px rgba(255,255,255,.2);
+    transition: .4s;
 }
 
 .search-box input::placeholder {
-    color: #ffe066;
-    letter-spacing: 1px;
+    color: rgba(255,215,0,.5);
 }
 
-/* ===== RESULT ===== */
-.movie-list {
-    margin-top: 40px;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 25px;
-}
-
-/* ===== CARD ===== */
-.movie-card {
-    background: radial-gradient(circle at top, #3a2a00, #120c00);
-    border-radius: 14px;
-    padding: 15px;
-    text-align: center;
+.search-box input:focus {
+    outline: none;
+    transform: translateY(-3px) scale(1.02);
     box-shadow:
-        0 0 20px rgba(255,200,0,.35),
-        inset 0 0 10px rgba(255,200,0,.15);
-    transition: .2s;
+        0 0 0 4px rgba(255,215,0,.2),
+        0 0 25px rgba(255,215,0,.5);
+}
+
+/* ================= MOVIE LIST ================= */
+.movie-list {
+    margin-top: 50px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap: 30px;
+}
+
+/* ================= MOVIE CARD ================= */
+.movie-card {
+    position: relative;
+    background: radial-gradient(circle at top, #3a2a00, #120c00);
+    padding: 15px;
+    border-radius: 15px;
+    box-shadow:
+        0 15px 40px rgba(0,0,0,.6),
+        inset 0 0 10px rgba(255,215,0,.2);
+    transform-style: preserve-3d;
+    animation: fadeInUp .8s ease backwards;
+    transition: .4s;
+}
+
+.movie-card::before {
+    content: '';
+    position: absolute;
+    inset: -50%;
+    background: linear-gradient(
+        45deg,
+        transparent 30%,
+        rgba(255,215,0,.3),
+        transparent 70%
+    );
+    transform: rotate(45deg);
+    transition: .6s;
+}
+
+.movie-card:hover::before {
+    left: 100%;
 }
 
 .movie-card:hover {
-    transform: scale(1.05);
+    transform: translateY(-10px) rotateX(6deg) scale(1.05);
+    box-shadow:
+        0 30px 60px rgba(0,0,0,.7),
+        0 0 30px rgba(255,215,0,.4);
 }
 
 .movie-card img {
@@ -106,27 +194,33 @@ body {
     height: 260px;
     object-fit: cover;
     border-radius: 10px;
-    margin-bottom: 10px;
 }
 
 .movie-card h4 {
-    margin: 8px 0 4px;
-    font-size: 16px;
-    color: #ffd700;
+    margin-top: 12px;
 }
 
 .movie-card span {
-    font-size: 14px;
     color: #ffe066;
 }
 
-/* ===== NOT FOUND ===== */
+/* ================= NOT FOUND ================= */
 .not-found {
     grid-column: 1 / -1;
-    text-align: center;
-    font-size: 20px;
+    font-size: 1.4em;
     color: #ff7777;
-    text-shadow: 0 0 10px rgba(255,0,0,.7);
+    animation: fadeInUp 1s ease;
+}
+
+/* ================= ANIMATIONS ================= */
+@keyframes fadeInDown {
+    from { opacity:0; transform:translateY(-40px) rotateX(-20deg); }
+    to { opacity:1; transform:none; }
+}
+
+@keyframes fadeInUp {
+    from { opacity:0; transform:translateY(40px) scale(.95); }
+    to { opacity:1; transform:none; }
 }
 </style>
 </head>
@@ -134,18 +228,15 @@ body {
 <body>
 
 <div class="container">
-
-    <div class="header">
-        <h1>🎬 MOVIE / FILM FINDER</h1>
-        <p class="subtitle">Selamat datang di Movie Finder!</p>
-    </div>
+    <h1>🎬 MOVIE FINDER</h1>
+    <p class="subtitle">Cari film favoritmu </p>
 
     <div class="search-box">
         <form method="get">
             <input
                 type="text"
                 name="judul"
-                placeholder="Cari Film Berdasarkan Judul"
+                placeholder="Cari judul film..."
                 value="<?= isset($_GET['judul']) ? htmlspecialchars($_GET['judul']) : '' ?>"
                 onkeyup="this.form.submit()"
                 autofocus
@@ -157,25 +248,27 @@ body {
         <?php
         if (!empty($_GET['judul'])) {
             $judul = urlencode($_GET['judul']);
-            $url = "https://www.omdbapi.com/?apikey=$APIKEY&s=$judul";
-            $response = callAPI($url);
+            $url = "https://www.omdbapi.com/?apikey=$apiKey&s=$judul";
+            $response = callAPI("GET",$url);
             $data = json_decode($response, true);
 
+
             if ($data['Response'] === "True") {
+                $i = 0;
                 foreach ($data['Search'] as $film) {
-                    echo "<div class='movie-card'>";
-                    echo "<img src='{$film['Poster']}' alt='Poster'>";
+                    echo "<div class='movie-card' style='animation-delay:".($i*0.1)."s'>";
+                    echo "<img src='{$film['Poster']}'>";
                     echo "<h4>{$film['Title']}</h4>";
                     echo "<span>{$film['Year']}</span>";
                     echo "</div>";
+                    $i++;
                 }
             } else {
-                echo "<p class='not-found'>Film tidak ditemukan</p>";
+                echo "<p class='not-found'>🎞 Film tidak ditemukan</p>";
             }
         }
         ?>
     </div>
-
 </div>
 
 </body>
