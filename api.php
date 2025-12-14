@@ -1,14 +1,20 @@
 <?php
-// Load .env secara manual (WORK di XAMPP)
-$env = parse_ini_file(__DIR__ . '/.env');
 
-$apiKey = $env['APIKEY'] ?? null;
+// Load .env jika ada (tidak error di GitHub)
+$env = [];
+$envFile = __DIR__ . '/.env';
 
-if (!$apiKey) {
-    die("API Key tidak ditemukan di file .env");
+if (file_exists($envFile)) {
+    $env = parse_ini_file($envFile);
 }
 
-function callAPI($method, $url)
+// Ambil API Key (fallback supaya tidak crash di CI)
+$apiKey = $env['APIKEY'] ?? getenv('APIKEY') ?? 'DUMMY_KEY';
+
+/**
+ * Function untuk call API
+ */
+function callAPI(string $method, string $url): string
 {
     $curl = curl_init();
 
@@ -16,14 +22,24 @@ function callAPI($method, $url)
         CURLOPT_URL => $url,
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_CUSTOMREQUEST => $method,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_TIMEOUT => 10,
     ]);
 
     $result = curl_exec($curl);
 
     if ($result === false) {
-        die("cURL Error: " . curl_error($curl));
+        $error = curl_error($curl);
+        curl_close($curl);
+        return json_encode(['error' => $error]);
     }
 
+    $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
     curl_close($curl);
+
+    if ($httpCode >= 400) {
+        return json_encode(['http_code' => $httpCode, 'body' => $result]);
+    }
+
     return $result;
 }
