@@ -9,7 +9,7 @@ class FileTypeTest extends TestCase
     ];
 
     /**
-     *  Test 1: Pastikan file yang dibutuhkan ada
+     * Test 1: Pastikan file yang dibutuhkan ada
      */
     public function test_files_exist()
     {
@@ -19,7 +19,7 @@ class FileTypeTest extends TestCase
     }
 
     /**
-     *  Test 2: Pastikan file PHP mengandung tag PHP
+     * Test 2: Pastikan file PHP mengandung tag PHP
      */
     public function test_php_files_contain_php_code()
     {
@@ -32,7 +32,7 @@ class FileTypeTest extends TestCase
     }
 
     /**
-     *  Test 3: Pastikan file PHP berisi elemen HTML valid
+     * Test 3: Pastikan file PHP berisi elemen HTML valid
      */
     public function test_html_files_contain_html_tags()
     {
@@ -50,7 +50,7 @@ class FileTypeTest extends TestCase
     }
 
     /**
-     *  Test 4: Pastikan tidak ada error sintaks di file PHP.
+     * Test 4: Pastikan tidak ada error sintaks di file PHP
      */
     public function test_no_syntax_errors_in_php_files()
     {
@@ -59,7 +59,6 @@ class FileTypeTest extends TestCase
                 $output = null;
                 $resultCode = null;
 
-                // Jalankan PHP lint (cek syntax)
                 exec("php -l $file", $output, $resultCode);
 
                 $this->assertSame(
@@ -72,7 +71,7 @@ class FileTypeTest extends TestCase
     }
 
     /**
-     *  Test 5: Pastikan tidak ada trailing whitespace (spasi di akhir baris)
+     * Test 5: Pastikan tidak ada trailing whitespace
      */
     public function test_php_files_have_no_trailing_whitespace()
     {
