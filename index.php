@@ -16,9 +16,7 @@ echo "<h2>$judul</h2>";
   laman-tahunfilm
     <a href="laman-judulfilm.php">Cari Film Berdasarkan Judul</a>
     <a href="laman-tahunfilm.php">Cari Film Berdasarkan Tahun Rilis</a>
-
-    <a href="laman-judulfilm.php">Cari Berdasarkan Judul</a>
-    <a href="laman-typefilm.php">Cari Berdasarkan Tipe</a>
+    <a href="laman-typefilm.php">Cari Film Berdasarkan Tipe</a>
  main
 </div>
 
