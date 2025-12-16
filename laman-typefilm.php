@@ -84,11 +84,6 @@ button {
     box-shadow:
         0 0 20px rgba(255,0,0,.7),
         inset 0 0 10px rgba(255,255,255,.2);
-    transition: .2s;
-}
-
-button:hover {
-    transform: scale(1.03);
 }
 
 /* ===== HASIL ===== */
@@ -116,6 +111,39 @@ button:hover {
     font-size: 14px;
     color: #fff;
 }
+
+/* ===== DETAIL ===== */
+.detail-btn {
+    margin-top: 6px;
+    background: transparent;
+    border: 1px solid #ffd54a;
+    color: #ffd54a;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.detail-btn:hover {
+    background: #ffd54a;
+    color: #000;
+}
+
+.detail-box {
+    display: none;
+    margin-top: 8px;
+    font-size: 12px;
+    line-height: 1.4;
+    color: #ddd;
+    background: rgba(0,0,0,.35);
+    padding: 8px;
+    border-radius: 8px;
+}
+
+.rating {
+    color: #ffd700;
+    font-weight: bold;
+}
 </style>
 </head>
 
@@ -142,7 +170,6 @@ if (!empty($_GET['judul'])) {
     $judul = urlencode($_GET['judul']);
     $tipe  = $_GET['tipe'] ?? '';
 
-    // jika tipe kosong → semua
     $typeParam = $tipe ? "&type=$tipe" : "";
 
     $url = "https://www.omdbapi.com/?apikey=$apiKey&s=$judul$typeParam";
@@ -159,13 +186,40 @@ if (!empty($_GET['judul'])) {
                 ? $film['Poster']
                 : "https://via.placeholder.com/80x110?text=No+Image";
 
+            /* === DETAIL FILM === */
+            $imdbID = $film['imdbID'];
+            $detailUrl = "https://www.omdbapi.com/?apikey=$apiKey&i=$imdbID&plot=short";
+            $detailResponse = callAPI("GET", $detailUrl);
+            $detail = json_decode($detailResponse, true);
+
+            $plot    = $detail['Plot'] ?? 'Deskripsi tidak tersedia';
+            $genre   = $detail['Genre'] ?? '-';
+            $runtime = $detail['Runtime'] ?? '-';
+            $rating  = ($detail['imdbRating'] !== "N/A")
+                ? "⭐ {$detail['imdbRating']}/10"
+                : "⭐ N/A";
+
+            $detailId = "detail_" . $imdbID;
+
             echo "
             <div class='result-item'>
-                <img src='$poster' alt='Poster'>
+                <img src='$poster'>
                 <div class='result-info'>
                     <strong>{$film['Title']}</strong><br>
                     Tahun : {$film['Year']}<br>
-                    Tipe  : {$film['Type']}
+                    Tipe  : {$film['Type']}<br>
+                    <span class='rating'>$rating</span><br>
+
+                    <button class='detail-btn' onclick=\"toggleDetail('$detailId')\">
+                        Detail
+                    </button>
+
+                    <div class='detail-box' id='$detailId'>
+                        <strong>Genre:</strong> $genre<br>
+                        <strong>Durasi:</strong> $runtime<br>
+                        <strong>Deskripsi:</strong><br>
+                        $plot
+                    </div>
                 </div>
             </div>
             ";
@@ -180,5 +234,13 @@ if (!empty($_GET['judul'])) {
 ?>
 
 </div>
+
+<script>
+function toggleDetail(id) {
+    const el = document.getElementById(id);
+    el.style.display = (el.style.display === "block") ? "none" : "block";
+}
+</script>
+
 </body>
 </html>
