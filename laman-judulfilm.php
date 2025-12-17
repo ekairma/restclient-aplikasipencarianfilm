@@ -142,6 +142,31 @@ h1 {
         0 0 25px rgba(255,215,0,.5);
 }
 
+/* ================= BUTTON CARI (TAMBAHAN SAJA) ================= */
+.btn-cari {
+    width: 100%;
+    margin-top: 20px;
+    padding: 16px;
+    border: none;
+    border-radius: 14px;
+    font-size: 1.2em;
+    font-weight: bold;
+    cursor: pointer;
+    color: #fff;
+    background: linear-gradient(90deg, #ff0033, #cc0000);
+    box-shadow:
+        0 10px 30px rgba(255,0,0,.5),
+        0 0 20px rgba(255,0,0,.6);
+    transition: .4s;
+}
+
+.btn-cari:hover {
+    transform: translateY(-3px) scale(1.03);
+    box-shadow:
+        0 15px 40px rgba(255,0,0,.7),
+        0 0 30px rgba(255,50,50,.9);
+}
+
 /* ================= MOVIE LIST ================= */
 .movie-list {
     margin-top: 50px;
@@ -229,7 +254,7 @@ h1 {
 
 <div class="container">
     <h1>🎬 MOVIE FINDER</h1>
-    <p class="subtitle">Cari film favoritmu </p>
+    <p class="subtitle">Cari film favoritmu</p>
 
     <div class="search-box">
         <form method="get">
@@ -241,6 +266,7 @@ h1 {
                 onkeyup="this.form.submit()"
                 autofocus
             >
+            <button type="submit" class="btn-cari">CARI</button>
         </form>
     </div>
 
@@ -251,7 +277,6 @@ h1 {
             $url = "https://www.omdbapi.com/?apikey=$apiKey&s=$judul";
             $response = callAPI("GET",$url);
             $data = json_decode($response, true);
-
 
             if ($data['Response'] === "True") {
                 $i = 0;
