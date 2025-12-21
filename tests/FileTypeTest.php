@@ -8,7 +8,6 @@ class FileTypeTest extends TestCase
         'laman-judulfilm.php',
         'laman-tahunfilm.php',
         'laman-typefilm.php',
- main
     ];
 
     /**
@@ -91,4 +90,31 @@ class FileTypeTest extends TestCase
             }
         }
     }
+
+    /**
+ * Test 6: Pastikan API Key dapat dibaca dari .env
+ */
+public function test_api_key_can_be_loaded()
+{
+    $envFile = __DIR__ . '/../.env';
+
+    if (!file_exists($envFile)) {
+        $this->markTestSkipped('.env tidak tersedia di environment ini');
+    }
+
+    $env = parse_ini_file($envFile);
+
+    $this->assertArrayHasKey(
+        'APIKEY',
+        $env,
+        'APIKEY tidak ditemukan di file .env'
+    );
+
+    $this->assertNotEmpty(
+        $env['APIKEY'],
+        'APIKEY di .env kosong'
+    );
+}
+
+
 }
